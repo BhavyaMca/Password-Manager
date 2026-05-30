@@ -1,0 +1,2121 @@
+INDEX
+
+SR	Topics	Sign
+1	Design a Web Application for an Organization with Registration forms and advanced controls	
+2	Create a website using the master page concept.	
+3	Design a webpage to demonstrate a connection oriented architecture.	
+4	Design a webpage to demonstrate a disconnected architecture.	
+5	Create a webpage that demonstrates the use of data bound controls of ASP.NET.	
+6	Design a webpage to demonstrate the working of a simple stored procedure.	
+7	Design a webpage to demonstrate the working of parameterized stored procedures.	
+8	Design a webpage to display the use of LINQ.	
+9	Build websites to demonstrate the working of entity frameworks in dot net.	
+10	Design Web Applications using Client Side Session Management	
+11	Design Web Applications using Server Side Session Management Techniques	
+12	Build a web page using AJAX Controls.	
+13	Design Web Application to produce and Consume a web Service	
+14	Design web application using MVC framework	
+15	Design MVC application using entity framework	
+16	Design MVC Application to perform CRUD operation.	
+
+
+Practical 1
+Aim : Design a Web Application for an Organization with Registration forms and advanced controls
+
+WebForm1.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="practical_dummy.WebForm1" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Organization Registration</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    form {
+        width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input[type="text"], input[type="password"], select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .btn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .result-panel {
+        margin-top: 20px;
+        padding: 15px;
+        background: #eaf7ea;
+        border-radius: 8px;
+        border: 1px solid #b6e0b6;
+    }
+
+    .gridview {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .gridview th {
+        background: #007bff;
+        color: white;
+        padding: 8px;
+    }
+
+    .gridview td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .error {
+        color: red;
+        font-size: 12px;
+    }
+</style>
+</head>
+<body>
+<form id="form1" runat="server">
+
+<h2>Employee Registration Form</h2>
+
+<asp:ValidationSummary ID="ValidationSummary1" runat="server" ForeColor="Red"/>
+
+Name:
+<asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+<asp:RequiredFieldValidator ControlToValidate="txtName" runat="server" ErrorMessage="Name required" ForeColor="Red"/>
+
+<br /><br />
+
+Email:
+<asp:TextBox ID="txtEmail" runat="server"></asp:TextBox>
+<asp:RegularExpressionValidator ControlToValidate="txtEmail" runat="server"
+ErrorMessage="Invalid Email" ForeColor="Red"
+ValidationExpression="\w+@\w+\.\w+" />
+
+<br /><br />
+
+Password:
+<asp:TextBox ID="txtPassword" runat="server" TextMode="Password"></asp:TextBox>
+
+Confirm Password:
+<asp:TextBox ID="txtConfirm" runat="server" TextMode="Password"></asp:TextBox>
+
+<asp:CompareValidator ControlToCompare="txtPassword" ControlToValidate="txtConfirm"
+runat="server" ErrorMessage="Passwords do not match" ForeColor="Red"/>
+
+<br /><br />
+
+Age:
+<asp:TextBox ID="txtAge" runat="server"></asp:TextBox>
+<asp:RangeValidator ControlToValidate="txtAge" MinimumValue="18" MaximumValue="60"
+Type="Integer" runat="server" ErrorMessage="Age must be 18-60" ForeColor="Red"/>
+
+<br /><br />
+
+Gender:
+<asp:RadioButtonList ID="rblGender" runat="server">
+    <asp:ListItem>Male</asp:ListItem>
+    <asp:ListItem>Female</asp:ListItem>
+</asp:RadioButtonList>
+
+<br />
+
+Skills:
+<asp:CheckBoxList ID="cblSkills" runat="server">
+    <asp:ListItem>C#</asp:ListItem>
+    <asp:ListItem>Java</asp:ListItem>
+    <asp:ListItem>Python</asp:ListItem>
+</asp:CheckBoxList>
+
+<br />
+
+Department:
+<asp:DropDownList ID="ddlDept" runat="server">
+    <asp:ListItem>Select</asp:ListItem>
+    <asp:ListItem>HR</asp:ListItem>
+    <asp:ListItem>IT</asp:ListItem>
+    <asp:ListItem>Finance</asp:ListItem>
+</asp:DropDownList>
+
+<br /><br />
+
+Country:
+<asp:ListBox ID="lstCountry" runat="server">
+    <asp:ListItem>India</asp:ListItem>
+    <asp:ListItem>USA</asp:ListItem>
+    <asp:ListItem>UK</asp:ListItem>
+</asp:ListBox>
+
+<br /><br />
+
+Date of Birth:
+<asp:Calendar ID="Calendar1" runat="server"></asp:Calendar>
+
+<br /><br />
+
+Upload Resume:
+<asp:FileUpload ID="FileUpload1" runat="server" />
+
+<br /><br />
+
+<asp:Button ID="btnSubmit" runat="server" Text="Register" OnClick="btnSubmit_Click" />
+
+<hr />
+
+<!-- RESULT PANEL -->
+<asp:Panel ID="pnlResult" runat="server" Visible="false">
+    <h3>Registration Result</h3>
+
+    <asp:GridView ID="GridView1" runat="server"></asp:GridView>
+</asp:Panel>
+
+</form>
+</body>
+</html>
+WebForm1.aspx.cs
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace practical_dummy
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            if (Page.IsValid)
+            {
+                string skills = "";
+
+                foreach (System.Web.UI.WebControls.ListItem item in cblSkills.Items)
+                {
+                    if (item.Selected)
+                    {
+                        skills += item.Text + ", ";
+                    }
+                }
+
+                DataTable dt = new DataTable();
+
+                dt.Columns.Add("Name");
+                dt.Columns.Add("Email");
+                dt.Columns.Add("Gender");
+                dt.Columns.Add("Skills");
+                dt.Columns.Add("Department");
+                dt.Columns.Add("Country");
+                dt.Columns.Add("DOB");
+
+                dt.Rows.Add(
+                    txtName.Text,
+                    txtEmail.Text,
+                    rblGender.SelectedValue,
+                    skills,
+                    ddlDept.SelectedValue,
+                    lstCountry.SelectedValue,
+                    Calendar1.SelectedDate.ToShortDateString()
+                );
+
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+
+                pnlResult.Visible = true;
+            }
+        }
+    }
+}
+OUTPUT
+ 
+ 
+
+Practical 2
+Aim : Create a website using the master page concept.
+Site1.master
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="master_text.Site1" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>My Website</title>
+
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .menu {
+            background-color: #555;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a {
+            color: white;
+            margin: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .menu a:hover {
+            color: yellow;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="form1" runat="server">
+
+        <div class="header">
+            <h1>My Master Page Demo</h1>
+        </div>
+
+        <div class="menu">
+            <a href="Home.aspx">Home</a>
+            <a href="About.aspx">About</a>
+        </div>
+
+        <div class="content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 My Website</p>
+        </div>
+
+    </form>
+</body>
+</html>
+Home.aspx
+<%@ Page Language="C#" MasterPageFile="~/Site1.master" AutoEventWireup="true" CodeBehind="Home.aspx.cs" Inherits="master_text.Home" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <h2>Welcome to Home Page</h2>
+    <p>This is the home page content.</p>
+</asp:Content>
+About.aspx
+<%@ Page Language="C#" MasterPageFile="~/Site1.master" AutoEventWireup="true" CodeBehind="About.aspx.cs" Inherits="master_text.About1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <h2>About Us</h2>
+    <p>This is the about page.</p>
+</asp:Content>
+
+
+
+
+Practical 3
+Aim : Design a webpage to demonstrate a connection oriented architecture.
+
+Webform1.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="boomrang.WebForm1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:TextBox ID="txtName" runat="server" Placeholder="Enter Name"></asp:TextBox>
+<asp:TextBox ID="txtEmail" runat="server" Placeholder="Enter Email"></asp:TextBox>
+
+<asp:Button ID="btnSave" runat="server" Text="Save" OnClick="btnSave_Click" />
+
+<br /><br />
+
+<asp:GridView ID="GridView1" runat="server"></asp:GridView>
+        </div>
+    </form>
+</body>
+</html>
+Webform.apsx.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+namespace boomrang
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        string connStr = ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                LoadData();
+            }
+        }
+
+        protected void btnSave_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();  // 🔑 Connection explicitly opened
+
+                SqlCommand cmd = new SqlCommand(
+                    "INSERT INTO Users(Name, Email) VALUES(@Name, @Email)", conn);
+
+                cmd.Parameters.AddWithValue("@Name", txtName.Text);
+                cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
+
+                cmd.ExecuteNonQuery();
+
+                conn.Close(); // 🔑 Connection explicitly closed
+            }
+
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Users", conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+
+                conn.Close();
+            }
+        }
+    }
+}
+Sql commands
+CREATE DATABASE DemoDB_Connection_01;
+
+USE DemoDB_Connection_01;
+
+CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100),
+    Email NVARCHAR(100)
+);
+Web.config
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  https://go.microsoft.com/fwlink/?LinkId=169433
+  -->
+<configuration>
+        <connectionStrings>
+                <add name="DBConnection"
+                         connectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=DemoDB_Connection_01;Integrated Security=True"
+                         providerName="System.Data.SqlClient" />
+        </connectionStrings>
+  <system.web>
+    <compilation debug="true" targetFramework="4.7.2" />
+    <httpRuntime targetFramework="4.7.2" />
+    <pages>
+      <namespaces>
+        <add namespace="System.Web.Optimization" />
+      </namespaces>
+      <controls>
+        <add assembly="Microsoft.AspNet.Web.Optimization.WebForms" namespace="Microsoft.AspNet.Web.Optimization.WebForms" tagPrefix="webopt" />
+      </controls>
+    </pages>
+  </system.web>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Antlr3.Runtime" publicKeyToken="eb42632606e9261f" />
+        <bindingRedirect oldVersion="0.0.0.0-3.5.0.2" newVersion="3.5.0.2" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Web.Infrastructure" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-2.0.0.0" newVersion="2.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" />
+        <bindingRedirect oldVersion="0.0.0.0-13.0.0.0" newVersion="13.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-1.6.5135.21930" newVersion="1.6.5135.21930" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <system.codedom>
+    <compilers>
+      <compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:1659;1699;1701" />
+      <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:41008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+" />
+    </compilers>
+  </system.codedom>
+</configuration>
+OUTPUT
+
+
+Practical 4
+Aim : Design a webpage to demonstrate a disconnected architecture.
+
+Webform1.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="WebApplication7.WebForm1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <h2>Employee Records (Disconnected Architecture)</h2>
+
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="true"></asp:GridView>
+
+        <br />
+
+        <asp:Button ID="btnLoad" runat="server" Text="Load Data" OnClick="btnLoad_Click" />
+        <asp:Button ID="btnUpdate" runat="server" Text="Update Data" OnClick="btnUpdate_Click" />
+    </form>
+</body>
+</html>
+Webform1.aspx.cs
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace WebApplication7
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        // Only DataSet in ViewState (SAFE)
+        private DataSet ds
+        {
+            get { return ViewState["ds"] as DataSet; }
+            set { ViewState["ds"] = value; }
+        }
+
+        string connStr = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Employees;Integrated Security=True";
+
+        protected void btnLoad_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(connStr))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Employees", con);
+
+                DataSet temp = new DataSet();
+                da.Fill(temp, "Employees");
+
+                ds = temp; // store ONLY dataset
+
+                GridView1.DataSource = ds.Tables["Employees"];
+                GridView1.DataBind();
+            }
+        }
+
+        protected void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (ds == null)
+            {
+                Response.Write("Click Load first!");
+                return;
+            }
+
+            using (SqlConnection con = new SqlConnection(connStr))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Employees", con);
+
+                SqlCommandBuilder cb = new SqlCommandBuilder(da);
+
+                // Modify data in memory
+                if (ds.Tables["Employees"].Rows.Count > 0)
+                {
+                    ds.Tables["Employees"].Rows[0]["Name"] = "Updated Name";
+                }
+
+                // Push update to DB
+                da.Update(ds, "Employees");
+
+                // Refresh Grid
+                GridView1.DataSource = ds.Tables["Employees"];
+                GridView1.DataBind();
+            }
+        }
+    }
+}
+SQL
+CREATE TABLE Employees (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name VARCHAR(50) NOT NULL,
+    Age INT NOT NULL
+);
+INSERT INTO Employees (Name, Age) VALUES
+('Sahil', 22),
+('Rahul', 25),
+('Amit', 28);
+
+
+
+
+OUTPUT
+ 
+
+Practical 5
+Create a webpage that demonstrates the use of data bound controls of ASP.NET.
+
+Webform1.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="charizard.WebForm1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:DropDownList ID="DropDownList1" runat="server" 
+    AutoPostBack="True" 
+    OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged">
+</asp:DropDownList>
+<br /><br />
+
+<asp:GridView ID="GridView1" runat="server" OnSelectedIndexChanged="GridView1_SelectedIndexChanged"></asp:GridView>
+<br /><br />
+
+<asp:DetailsView ID="DetailsView1" runat="server" Height="50px" Width="125px"></asp:DetailsView>
+        </div>
+    </form>
+</body>
+</html>
+Webform1.aspx.cs
+using System;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace charizard
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        string cs = ConfigurationManager.ConnectionStrings["DemoConnection"].ConnectionString;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                BindGrid();
+                BindDropdown();
+            }
+        }
+
+        void BindGrid()
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Students", con);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+
+                // Show first record initially
+                DetailsView1.DataSource = dt;
+                DetailsView1.DataBind();
+            }
+        }
+
+        void BindDropdown()
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Students", con);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                DropDownList1.DataSource = dt;
+                DropDownList1.DataTextField = "Name";
+                DropDownList1.DataValueField = "Id";
+                DropDownList1.DataBind();
+            }
+        }
+
+        // GridView selection → updates DetailsView
+        protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = GridView1.SelectedIndex;
+
+            if (index >= 0)
+            {
+                DetailsView1.PageIndex = index;
+            }
+        }
+
+        // 🔥 NEW: Dropdown selection → updates DetailsView
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                string query = "SELECT * FROM Students WHERE Id = @Id";
+                SqlDataAdapter da = new SqlDataAdapter(query, con);
+                da.SelectCommand.Parameters.AddWithValue("@Id", DropDownList1.SelectedValue);
+
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                DetailsView1.DataSource = dt;
+                DetailsView1.DataBind();
+            }
+        }
+    }
+}
+SQL Query
+CREATE TABLE Students (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(50),
+    Age INT,
+    Course NVARCHAR(50)
+);
+
+INSERT INTO Students (Name, Age, Course) VALUES
+('Rahul', 20, 'BCA'),
+('Anita', 22, 'MCA'),
+('Vikas', 21, 'BSc');
+Output
+
+
+Practical 6
+Design a webpage to demonstrate the working of a simple stored procedure.
+
+Webform1.apsx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="WebApplication6.WebForm1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <div>
+    <h2>Stored Procedure Demo</h2>
+
+    Enter Name:
+    <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+    <br /><br />
+
+    <asp:Button ID="btnSave" runat="server" Text="Save" OnClick="btnSave_Click" />
+    <br /><br />
+
+    <asp:GridView ID="GridView1" runat="server"></asp:GridView>
+</div>
+        </div>
+    </form>
+</body>
+</html>
+Webform1.apsx.cs
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication6
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        string cs = ConfigurationManager.ConnectionStrings["conStr"].ConnectionString;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                LoadData();
+            }
+        }
+
+        protected void btnSave_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand("InsertStudent", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Name", txtName.Text);
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+
+            txtName.Text = "";
+            LoadData();
+        }
+
+        void LoadData()
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Students", con);
+                DataTable dt = new DataTable();
+
+                da.Fill(dt);
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+            }
+        }
+    }
+}
+SQL
+CREATE TABLE Students (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50)
+);
+CREATE PROCEDURE InsertStudent
+    @Name NVARCHAR(50)
+AS
+BEGIN
+    INSERT INTO Students(Name)
+    VALUES(@Name)
+END
+Output
+
+Practical 7
+Aim : Design a webpage to demonstrate the working of parameterized stored procedures.
+
+WebForm1.aspx
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+
+namespace WebApplication5
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                LoadData();
+            }
+        }
+
+        protected void btnInsert_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand("InsertStudent", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Name", txtName.Text);
+                cmd.Parameters.AddWithValue("@Marks", txtMarks.Text);
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Students1", con);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+            }
+        }
+
+    }
+}
+Webform1.aspx.cs
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+
+namespace WebApplication5
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        string cs = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                LoadData();
+            }
+        }
+
+        protected void btnInsert_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand("InsertStudent", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Name", txtName.Text);
+                cmd.Parameters.AddWithValue("@Marks", txtMarks.Text);
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Students1", con);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+            }
+        }
+
+    }
+}
+Web.config
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  https://go.microsoft.com/fwlink/?LinkId=169433
+  -->
+<configuration>
+        <connectionStrings>
+                <add name="DBCS"
+                         connectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=StudentDB;Integrated Security=True"
+                         providerName="System.Data.SqlClient"/>
+        </connectionStrings>
+  <system.web>
+    <compilation debug="true" targetFramework="4.7.2" />
+    <httpRuntime targetFramework="4.7.2" />
+    <pages>
+      <namespaces>
+        <add namespace="System.Web.Optimization" />
+      </namespaces>
+      <controls>
+        <add assembly="Microsoft.AspNet.Web.Optimization.WebForms" namespace="Microsoft.AspNet.Web.Optimization.WebForms" tagPrefix="webopt" />
+      </controls>
+    </pages>
+  </system.web>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Antlr3.Runtime" publicKeyToken="eb42632606e9261f" />
+        <bindingRedirect oldVersion="0.0.0.0-3.5.0.2" newVersion="3.5.0.2" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Web.Infrastructure" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-2.0.0.0" newVersion="2.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" />
+        <bindingRedirect oldVersion="0.0.0.0-13.0.0.0" newVersion="13.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-1.6.5135.21930" newVersion="1.6.5135.21930" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <system.codedom>
+    <compilers>
+      <compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:1659;1699;1701" />
+      <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:default /nowarn:41008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+" />
+    </compilers>
+  </system.codedom>
+</configuration>
+SQL
+CREATE TABLE Students1 (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50),
+    Marks INT
+);
+CREATE PROCEDURE InsertStudent
+    @Name NVARCHAR(50),
+    @Marks INT
+AS
+BEGIN
+    INSERT INTO Students1 (Name, Marks)
+    VALUES (@Name, @Marks)
+END;
+
+
+Output
+ 
+
+Practical 8
+Aim : To design a webpage to display the use of LINQ.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LINQExample
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+            int[] numbers = { 1, 2, 3, 4, 5, 30,89,76 };
+            var result = from n in numbers where n > 30 select n;
+
+            foreach (var item in result)
+            {
+                Console.WriteLine(item);
+            }
+        }
+    }
+}
+
+OUTPUT
+
+Practical 9
+Aim : Build websites to demonstrate the working of entity frameworks in dot net.
+
+Create.cshtml
+@model WebApplication4.Models.Student
+
+<h2>Add Student</h2>
+
+@using (Html.BeginForm())
+{
+    <label>Name</label>
+    @Html.TextBoxFor(m => m.Name)
+
+    <br />
+
+    <label>Age</label>
+    @Html.TextBoxFor(m => m.Age)
+
+    <br />
+
+    <label>Course</label>
+    @Html.TextBoxFor(m => m.Course)
+
+    <br />
+
+    <input type="submit" value="Save" />
+}
+Index.cshtml
+@model IEnumerable<WebApplication4.Models.Student>
+
+<h2>Student List</h2>
+
+<a href="/Student/Create">Add New</a>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Course</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Age</td>
+            <td>@item.Course</td>
+        </tr>
+    }
+
+</table>
+StudentController.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using WebApplication4.Models;
+
+
+namespace WebApplication4.Controllers
+{
+    public class StudentController : Controller
+    {
+        private StudentContext db = new StudentContext();
+
+        // READ
+        public ActionResult Index()
+        {
+            return View(db.Students.ToList());
+        }
+
+        // CREATE
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(Student s)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Students.Add(s);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(s);
+        }
+    }
+}
+StudentContext.cs
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+using WebApplication4.Models;
+using System.Data.Entity;
+
+
+namespace WebApplication4.Models
+{
+    public class StudentContext : DbContext
+    {
+        public StudentContext() : base("StudentContext")
+        {
+        }
+
+        public DbSet<Student> Students { get; set; }
+    }
+}
+Student.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.ComponentModel.DataAnnotations;
+
+namespace WebApplication4.Models
+{
+    public class Student
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        public int Age { get; set; }
+
+        public string Course { get; set; }
+    }
+}
+Web.Config
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+
+        <!-- MUST BE FIRST -->
+        <configSections>
+                <section name="entityFramework"
+                                 type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+                                 requirePermission="false" />
+        </configSections>
+
+        <connectionStrings>
+                <add name="StudentContext"
+                         connectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=EFStudentDB;Integrated Security=True"
+                         providerName="System.Data.SqlClient" />
+        </connectionStrings>
+
+        <appSettings>
+                <add key="webpages:Version" value="3.0.0.0" />
+                <add key="webpages:Enabled" value="false" />
+                <add key="ClientValidationEnabled" value="true" />
+                <add key="UnobtrusiveJavaScriptEnabled" value="true" />
+        </appSettings>
+
+        <system.web>
+                <compilation debug="true" targetFramework="4.7.2" />
+                <httpRuntime targetFramework="4.7.2" />
+        </system.web>
+
+        <runtime>
+                <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="Antlr3.Runtime" publicKeyToken="eb42632606e9261f" />
+                                <bindingRedirect oldVersion="0.0.0.0-3.5.0.2" newVersion="3.5.0.2" />
+                        </dependentAssembly>
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="Microsoft.Web.Infrastructure" publicKeyToken="31bf3856ad364e35" />
+                                <bindingRedirect oldVersion="0.0.0.0-2.0.0.0" newVersion="2.0.0.0" />
+                        </dependentAssembly>
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" />
+                                <bindingRedirect oldVersion="0.0.0.0-13.0.0.0" newVersion="13.0.0.0" />
+                        </dependentAssembly>
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="System.Web.Optimization" publicKeyToken="31bf3856ad364e35" />
+                                <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="1.1.0.0" />
+                        </dependentAssembly>
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+                                <bindingRedirect oldVersion="0.0.0.0-1.6.5135.21930" newVersion="1.6.5135.21930" />
+                        </dependentAssembly>
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
+                                <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+                        </dependentAssembly>
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
+                                <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+                        </dependentAssembly>
+
+                        <dependentAssembly>
+                                <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+                                <bindingRedirect oldVersion="1.0.0.0-5.2.9.0" newVersion="5.2.9.0" />
+                        </dependentAssembly>
+
+                </assemblyBinding>
+        </runtime>
+
+        <system.codedom>
+                <compilers>
+                        <compiler language="c#;cs;csharp" extension=".cs"
+                          type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+                          warningLevel="4"
+                          compilerOptions="/langversion:default /nowarn:1659;1699;1701" />
+
+                        <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb"
+                          type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+                          warningLevel="4"
+                          compilerOptions="/langversion:default /nowarn:41008 /define:_MYTYPE=&quot;Web&quot; /optionInfer+" />
+                </compilers>
+        </system.codedom>
+
+        <entityFramework>
+                <providers>
+                        <provider invariantName="System.Data.SqlClient"
+                                          type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+                </providers>
+        </entityFramework>
+
+</configuration>
+SQL
+CREATE TABLE Students (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100),
+    Age INT,
+    Course NVARCHAR(100)
+);
+
+ 
+ 
+
+Practical 10
+Aim : Design Web Applications using Client Side Session Management 
+Default.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ClientSessionDemo.Default" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Login Page</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h2>Enter Your Name</h2>
+            <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+            <br /><br />
+            <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_Click" />
+        </div>
+    </form>
+</body>
+</html>
+Default.aspx.cs
+using System;
+using System.Web;
+namespace ClientSessionDemo
+{
+    public partial class Default : System.Web.UI.Page
+    {
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            // Create cookie
+            HttpCookie userCookie = new HttpCookie("UserInfo");
+
+            // Store value
+            userCookie["Name"] = txtName.Text;
+
+            // Set expiry time (1 day)
+            userCookie.Expires = DateTime.Now.AddDays(1);
+
+            // Add cookie to response
+            Response.Cookies.Add(userCookie);
+
+            // Redirect to next page
+            Response.Redirect("Welcome.aspx");
+        }
+    }
+} 
+
+Welcome.aspx
+
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Welcome.aspx.cs" Inherits="ClientSessionDemo.Welcome" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Welcome Page</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h2>Welcome Page</h2>
+            <asp:Label ID="lblMessage" runat="server"></asp:Label>
+        </div>
+    </form>
+</body>
+</html>
+
+Welcome.aspx.cs
+using System;
+namespace ClientSessionDemo
+{
+    public partial class Welcome : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (Request.Cookies["UserInfo"] != null)
+            {
+                string name = Request.Cookies["UserInfo"]["Name"];
+                lblMessage.Text = "Hello, " + name + "!";
+            }
+            else
+            {
+                lblMessage.Text = "No cookie found!";
+            }
+        }
+    }
+}
+
+OUTPUT
+
+
+Practical 11
+Aim : Design Web Applications using Server Side Session Management Techniques 
+
+1) Default.aspx
+
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ServerSessionDemo.Default" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Login Page</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h2>Enter Your Name</h2>
+            <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+            <br /><br />
+            <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_Click" />
+        </div>
+    </form>
+</body>
+</html>
+Default.aspx.cs
+using System;
+namespace ServerSessionDemo
+{
+    public partial class Default : System.Web.UI.Page
+    {
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            // Store data in Session
+            Session["UserName"] = txtName.Text;
+            // Redirect to next page
+            Response.Redirect("Welcome.aspx");
+        }
+    }
+}
+Welcome.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Welcome.aspx.cs" Inherits="ServerSessionDemo.Welcome" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Welcome Page</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h2>Welcome Page</h2>
+            <asp:Label ID="lblMessage" runat="server"></asp:Label>
+        </div>
+    </form>
+</body>
+</html>
+
+4) Welcome.aspx.cs
+
+using System;
+
+namespace ServerSessionDemo
+{
+    public partial class Welcome : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (Session["UserName"] != null)
+            {
+                lblMessage.Text = "Hello, " + Session["UserName"].ToString();
+            }
+            else
+            {
+                lblMessage.Text = "Session expired or not set!";
+            }
+        }
+    }
+}
+
+OUTPUT
+
+Practical 12
+Build a web page using AJAX Controls.
+
+Webform1.apx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm2.aspx.cs" Inherits="pokemon.WebForm2" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>AJAX Demo</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        
+        <!-- Required for AJAX -->
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+
+        <div style="margin:50px">
+
+            <h2>ASP.NET AJAX Example</h2>
+
+            <!-- UpdatePanel for Partial Page Update -->
+            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                <ContentTemplate>
+
+                    <asp:Label ID="lblTime" runat="server" Text="Click button to get time" Font-Size="Large"></asp:Label>
+                    <br /><br />
+
+                    <asp:Button ID="btnGetTime" runat="server" Text="Get Current Time" OnClick="btnGetTime_Click" />
+
+                </ContentTemplate>
+            </asp:UpdatePanel>
+
+        </div>
+    </form>
+</body>
+</html>
+Webform2.aspx.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace pokemon
+{
+    public partial class WebForm2 : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnGetTime_Click(object sender, EventArgs e)
+        {
+            lblTime.Text = "Current Time: " + DateTime.Now.ToString();
+        }
+    }
+}
+OUTPUT
+
+
+Practical 13
+Aim : Design Web Application to produce and Consume a web Service
+
+Webform1.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="WebApplication10.WebForm1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div><asp:TextBox ID="txtId" runat="server"></asp:TextBox>
+<asp:Button ID="btnGet" runat="server" Text="Get Student Name" OnClick="btnGet_Click" />
+<br /><br />
+<asp:Label ID="lblResult" runat="server"></asp:Label>
+        </div>
+    </form>
+</body>
+</html>
+Webform1.aspx.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication10
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        protected void btnGet_Click(object sender, EventArgs e)
+        {
+            int id;
+
+            if (int.TryParse(txtId.Text, out id))
+            {
+                ServiceReference1.StudentServiceSoapClient obj =
+                    new ServiceReference1.StudentServiceSoapClient();
+
+                string name = obj.GetStudentName(id);
+
+                lblResult.Text = "Student Name: " + name;
+            }
+            else
+            {
+                lblResult.Text = "❌ Please enter a valid numeric ID!";
+            }
+        }
+    }
+}
+StudentServices.asmx.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Services;
+
+namespace WebApplication9
+{
+    [WebService(Namespace = "http://tempuri.org/")]
+    public class StudentService : WebService
+    {
+        [WebMethod]
+        public string GetStudentName(int id)
+        {
+            if (id == 1)
+                return "Sahil";
+            else if (id == 2)
+                return "Rahul";
+            else
+                return "Unknown Student";
+        }
+    }
+
+}
+OUTPUT
+
+
+Practical 14
+Aim : Design web application using MVC framework
+Index.cstml
+
+@model List<MVCStudentApp.Models.Student>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+            background: #f4f6f9;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 400px;
+            margin: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>📊 Student Dashboard</h2>
+
+    <div class="card">
+
+        <h3>Total Students: @ViewBag.TotalStudents</h3>
+
+        <form method="post" action="/Student/AddStudent">
+            <input type="text" name="name" placeholder="Enter student name" />
+            <button type="submit">Add</button>
+        </form>
+
+        <canvas id="studentChart"></canvas>
+
+        <ul>
+            @foreach (var student in Model)
+            {
+                <li>@student.Name</li>
+            }
+        </ul>
+
+    </div>
+
+    <script>
+    var total = @ViewBag.TotalStudents;
+
+    var ctx = document.getElementById('studentChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Students'],
+            datasets: [{
+                label: 'Total Count',
+                data: [total]
+            }]
+        }
+    });
+    </script>
+
+</body>
+</html>
+
+
+Student Controller.cs
+using System.Collections.Generic;
+using System.Web.Mvc;
+using MVCStudentApp.Models;
+
+namespace MVCStudentApp.Controllers
+{
+    public class StudentController : Controller
+    {
+        static List<Student> students = new List<Student>();
+
+        public ActionResult Index()
+        {
+            ViewBag.TotalStudents = students.Count;
+            return View(students);
+        }
+
+        [HttpPost]
+        public ActionResult AddStudent(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                students.Add(new Student { Name = name });
+            }
+            return RedirectToAction("Index");
+        }
+    }
+}
+
+Student.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace MVCStudentApp.Models
+{
+    public class Student
+    {
+        public string Name { get; set; }
+    }
+}
+
+OUTPUT
+
+
+Practical 15
+Aim : Design MVC application using entity framework 
+Install Entity Framework
+Go to:
+Tools → NuGet Package Manager → Package Manager Console
+Run:
+Install-Package EntityFramework
+
+1) Models/Student.cs
+
+using System.Data.Entity;
+
+namespace EFStudentApp.Models
+{
+    public class Student
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Marks { get; set; }
+    }
+
+    public class StudentContext : DbContext
+    {
+        public StudentContext() : base("StudentDB")
+        {
+        }
+
+        public DbSet<Student> Students { get; set; }
+    }
+}
+
+
+2) Controllers/StudentController.cs
+
+using System.Linq;
+using System.Web.Mvc;
+using EFStudentApp.Models;
+
+namespace EFStudentApp.Controllers
+{
+    public class StudentController : Controller
+    {
+        StudentContext db = new StudentContext();
+
+        public ActionResult Index()
+        {
+            var data = db.Students.ToList();
+            return View(data);
+        }
+
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(Student s)
+        {
+            db.Students.Add(s);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+    }
+}
+
+
+3) Views/Student/Create.cshtml
+
+@model EFStudentApp.Models.Student
+
+<h2>Add Student</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        Name: @Html.TextBoxFor(m => m.Name)
+    </div>
+
+    <br />
+
+    <div>
+        Marks: @Html.TextBoxFor(m => m.Marks)
+    </div>
+
+    <br />
+
+    <input type="submit" value="Save" />
+}
+
+
+4) Views/Student/Index.cshtml
+
+@model List<EFStudentApp.Models.Student>
+
+<h2>Student List</h2>
+
+<a href="/Student/Create">Add Student</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Marks</th>
+    </tr>
+
+    @foreach (var s in Model)
+    {
+        <tr>
+            <td>@s.Id</td>
+            <td>@s.Name</td>
+            <td>@s.Marks</td>
+        </tr>
+    }
+</table>
+
+
+5) Web.config
+
+<connectionStrings>
+  <add name="StudentDB"
+       connectionString="Data Source=.;Initial Catalog=StudentDB;Integrated Security=True"
+       providerName="System.Data.SqlClient" />
+</connectionStrings>
+
+6) Enable Database Creation
+
+Run this in Package Manager Console:
+Enable-Migrations
+Add-Migration InitialCreate
+Update-Database
+
+
+Output
+
+
+
+
+Practical 16
+Design MVC Application to perform CRUD operation.
+
+1) Controller/EmployeeController.cs
+
+using System.Linq;
+using System.Web.Mvc;
+using EmployeeCRUD.Models;
+
+namespace EmployeeApp.Controllers
+{
+    public class EmployeeController : Controller
+    {
+        EmployeeContext db = new EmployeeContext();
+
+        // READ (Display)
+        public ActionResult Index()
+        {
+            return View(db.Employees.ToList());
+        }
+
+        // CREATE
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(Employee e)
+        {
+            db.Employees.Add(e);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        // UPDATE
+        public ActionResult Edit(int id)
+        {
+            var emp = db.Employees.Find(id);
+            return View(emp);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Employee e)
+        {
+            db.Entry(e).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        // DELETE
+        public ActionResult Delete(int id)
+        {
+            var emp = db.Employees.Find(id);
+            return View(emp);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var emp = db.Employees.Find(id);
+            db.Employees.Remove(emp);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+    }
+}
+
+
+2) Models/Employee.cs
+
+using System.Data.Entity;
+
+namespace EmployeeCRUD.Models
+{
+    public class Employee
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Department { get; set; }
+        public int Salary { get; set; }
+    }
+
+    public class EmployeeContext : DbContext
+    {
+        public EmployeeContext() : base("EmployeeDB")
+        {
+        }
+
+        public DbSet<Employee> Employees { get; set; }
+    }
+}
+
+
+3) Views/Employee/Create.cs
+
+@model EmployeeCRUD.Models.Employee
+
+<h2>Add Employee</h2>
+
+@using (Html.BeginForm())
+{
+    <div>Name: @Html.TextBoxFor(m => m.Name)</div>
+    <div>Department: @Html.TextBoxFor(m => m.Department)</div>
+    <div>Salary: @Html.TextBoxFor(m => m.Salary)</div>
+
+    <br />
+    <input type="submit" value="Save" />
+}
+
+
+4) Views/Employee/Delete.cs
+
+@model EmployeeCRUD.Models.Employee
+
+<h2>Delete Employee</h2>
+
+<p>Are you sure you want to delete this?</p>
+
+<div>
+    Name: @Model.Name <br />
+    Department: @Model.Department <br />
+    Salary: @Model.Salary
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.Id)
+    <input type="submit" value="Delete" />
+}
+
+
+5) Views/Employee/Details.cs
+
+@model EmployeeCRUD.Models.Employee
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Employee</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Department)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Salary)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Salary)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+6) Views/Employee/Edit.cs
+
+@model EmployeeCRUD.Models.Employee
+<h2>Edit Employee</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.Id)
+
+    <div>Name: @Html.TextBoxFor(m => m.Name)</div>
+    <div>Department: @Html.TextBoxFor(m => m.Department)</div>
+    <div>Salary: @Html.TextBoxFor(m => m.Salary)</div>
+
+    <br />
+    <input type="submit" value="Update" />
+}
+
+
+7) Views/Employee/Index.cs
+
+@model List<EmployeeCRUD.Models.Employee>
+<h2>Employee List</h2>
+<a href="/Employee/Create">Add Employee</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Salary</th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var e in Model)
+    {
+        <tr>
+            <td>@e.Id</td>
+            <td>@e.Name</td>
+            <td>@e.Department</td>
+            <td>@e.Salary</td>
+            <td>
+                <a href="@Url.Action("Edit", "Employee", new { id = e.Id })">Edit</a> |
+                <a href="@Url.Action("Delete", "Employee", new { id = e.Id })">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+OUTPUT
+
+
+

@@ -1,0 +1,91 @@
+MVC Practical Easy
+
+View Index.cshtml
+@model IEnumerable<WebApplication8.Models.Student>
+
+@{
+    ViewData["Title"] = "Student List";
+}
+
+
+<h2>Student List</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Course</th>
+        <th>Age</th>
+    </tr>
+
+    @foreach (var student in Model)
+    {
+        <tr>
+            <td>@student.Id</td>
+            <td>@student.Name</td>
+            <td>@student.Course</td>
+            <td>@student.Age</td>
+        </tr>
+    }
+</table>
+
+
+
+
+StudentController.cs
+using System.Collections.Generic;
+using System.Web.Mvc;
+using WebApplication8.Models;
+
+namespace WebApplication8.Controllers
+{
+    public class StudentController : Controller
+    {
+        public ActionResult Index()
+        {
+            List<Student> students = new List<Student>()
+            {
+                new Student
+                {
+                    Id = 1,
+                    Name = "Rahul",
+                    Course = "Computer Science",
+                    Age = 20
+                },
+                new Student
+                {
+                    Id = 2,
+                    Name = "Priya",
+                    Course = "IT",
+                    Age = 21
+                }
+            };
+
+            return View(students);
+        }
+    }
+}
+
+
+Student.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WebApplication8.Models
+{
+    public class Student
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Course { get; set; }
+
+        public int Age { get; set; }
+    }
+}
+
+
+
